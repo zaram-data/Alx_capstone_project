@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Social Media API Docs</title>
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui.css">
+</head>
+<body>
+<div id="swagger-ui"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist/swagger-ui-bundle.js"></script>
+<script>
+window.onload = () => {
+  SwaggerUIBundle({
+    url: "/openapi-schema.yml",
+    dom_id: "#swagger-ui",
+  });
+};
+</script>
+</body>
+</html>

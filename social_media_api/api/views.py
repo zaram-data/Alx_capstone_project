@@ -1,21 +1,18 @@
-from rest_framework import generics, permissions
+from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from api.models import Post, Follow, Like
 from api.serializers import PostSerializer, FollowSerializer, LikeSerializer
 from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated
 
 # ---------------- Post Views ----------------
 
-class PostList(generics.ListAPIView):
+class PostListCreateView(generics.ListCreateAPIView):
     queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-class PostCreate(generics.CreateAPIView):
-    serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -60,15 +57,27 @@ class LikePost(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request, post_id):
-        obj, created = Like.objects.get_or_create(user=request.user, post_id=post_id)
-        return Response({'created': created})
+        try:
+            post = Post.objects.get(pk=post_id)
+        except Post.DoesNotExist:
+            return Response({"error": "Post does not exist"}, status=404)
+        
+        like, created = Like.objects.get_or_create(user=request.user, post=post)
+        return Response({"created": created})
 
 class UnlikePost(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
+
     def delete(self, request, post_id):
-        Like.objects.filter(user=request.user, post_id=post_id).delete()
-        return Response({'deleted': True})
+        post = get_object_or_404(Post, id=post_id)
+        deleted, _ = Like.objects.filter(user=request.user, post=post).delete()
+        
+        if deleted:
+            return Response({'detail': 'Like removed successfully.'}, status=status.HTTP_200_OK)
+        else:
+            return Response({'detail': 'You had not liked this post.'}, status=status.HTTP_400_BAD_REQUEST)
+	
 
 # ---------------- API Root ----------------
 

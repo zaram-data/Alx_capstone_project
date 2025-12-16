@@ -1,11 +1,10 @@
-from .views import ApiRoot
 from django.urls import path
+from .views import ApiRoot, PostListCreateView
 from api import views
 
 urlpatterns = [
-    path('', ApiRoot.as_view(), name='api-root'),  # 👈 Add this
-    path('posts/', views.PostList.as_view(), name='post-list'),
-    path('posts/create/', views.PostCreate.as_view(), name='post-create'),
+    path('', ApiRoot.as_view(), name='api-root'),
+    path('posts/', PostListCreateView.as_view(), name='post-list-create'),
     path('posts/<int:pk>/', views.PostDetail.as_view(), name='post-detail'),
     path('feed/', views.FeedView.as_view(), name='feed'),
     path('follow/<int:user_id>/', views.FollowUser.as_view(), name='follow'),

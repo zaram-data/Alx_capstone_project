@@ -31,6 +31,8 @@ urlpatterns = [
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),   # JWT token obtain
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),  # JWT token refresh
     path('', include(docs_urls)),                  # Swagger & Redoc docs
+    path('api/accounts/', include('accounts.urls')),    
+path('api/posts/', include('posts.urls')),
 ]
 
 

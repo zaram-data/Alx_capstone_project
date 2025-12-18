@@ -33,8 +33,10 @@ ALLOWED_HOSTS = [
 ]
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=30),  # default is usually 5 min
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),  # default is usually 5 min
     'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'BLACKLIST_AFTER_ROTATION': True,
 }
 
 # Application definition
@@ -49,6 +51,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'api',
     'drf_yasg',
+    'posts',
+    'accounts',   # auth app
+    'rest_framework_simplejwt.token_blacklist',
 ]
 
 
